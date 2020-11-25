@@ -105,7 +105,7 @@ namespace UiApp
 
             TextBlock memberUpdateAccessBlock = new TextBlock
             {
-                Text = "Member Update Access",
+                Text = "User Management",
                 Foreground = Brushes.White,
                 FontSize = 16,
                 FontWeight = FontWeights.ExtraBold,
