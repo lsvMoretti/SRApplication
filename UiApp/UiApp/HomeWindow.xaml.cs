@@ -24,9 +24,12 @@ namespace UiApp
         public string Username { get; }
         public int UserId { get; }
 
+        public static HomeWindow Instance;
         public HomeWindow(string username, int userId)
         {
             InitializeComponent();
+
+            Instance = this;
 
             Username = username;
             UserId = userId;
@@ -50,22 +53,51 @@ namespace UiApp
                 return;
             }
 
+            User.CurrentLoggedInUser = user;
+
             if (user.UserManagement)
             {
-                MembersMenu.Visibility = Visibility.Visible;
-            }
-
-            if (user.DiscordUserSync)
-            {
-                MenuItem forceDiscordSync = new MenuItem
+                MenuItem membersMenuItem = new MenuItem
                 {
-                    Header = "Force Discord Sync",
-                    Name = "DiscordSync"
-
+                    Name = "MembersMenu",
+                    Header = "Members"
                 };
-                forceDiscordSync.Click += DiscordSync_OnClick;
 
-                MembersMenu.Items.Add(forceDiscordSync);
+                MainMenu.Items.Add(membersMenuItem);
+
+                MenuItem showMembersItem = new MenuItem
+                {
+                    Name = "ShowMembers",
+                    Header = "Show Members"
+                };
+
+                membersMenuItem.Items.Add(showMembersItem);
+
+                showMembersItem.Click += ShowMembers_OnClick;
+
+                MenuItem addMemberItem = new MenuItem
+                {
+                    Name = "AddMember",
+                    Header = "Add Member"
+                };
+
+                membersMenuItem.Items.Add(addMemberItem);
+
+                addMemberItem.Click += AddMember_OnClick;
+
+                if (user.DiscordUserSync)
+                {
+                    MenuItem forceDiscordSyncItem = new MenuItem
+                    {
+                        Header = "Force Discord Sync",
+                        Name = "DiscordSync"
+
+                    };
+                    forceDiscordSyncItem.Click += DiscordSync_OnClick;
+
+                    membersMenuItem.Items.Add(forceDiscordSyncItem);
+                }
+
             }
         }
 
@@ -90,8 +122,11 @@ namespace UiApp
 
         }
 
-        private void SearchMember_OnClick(object sender, RoutedEventArgs e)
+        private void ShowMembers_OnClick(object sender, RoutedEventArgs e)
         {
+            ShowMembers showMembers = new ShowMembers();
+
+            showMembers.Show();
             return;
         }
 
