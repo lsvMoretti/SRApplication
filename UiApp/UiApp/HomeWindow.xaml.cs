@@ -85,6 +85,19 @@ namespace UiApp
 
                 addMemberItem.Click += AddMember_OnClick;
 
+                if (user.Admissions)
+                {
+                    MenuItem admissionsMenuItem = new MenuItem
+                    {
+                        Name = "Admissions",
+                        Header = "Admissions"
+                    };
+
+                    //TODO Add click event
+
+                    membersMenuItem.Items.Add(admissionsMenuItem);
+                }
+
                 if (user.DiscordUserSync)
                 {
                     MenuItem forceDiscordSyncItem = new MenuItem
@@ -93,6 +106,7 @@ namespace UiApp
                         Name = "DiscordSync"
 
                     };
+
                     forceDiscordSyncItem.Click += DiscordSync_OnClick;
 
                     membersMenuItem.Items.Add(forceDiscordSyncItem);

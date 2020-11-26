@@ -34,7 +34,6 @@ namespace UiApp
             MembersGrid.ColumnDefinitions.Add(new ColumnDefinition{Width = new GridLength(10, GridUnitType.Star)});
             MembersGrid.ColumnDefinitions.Add(new ColumnDefinition{ Width = new GridLength(25, GridUnitType.Star) });
             MembersGrid.ColumnDefinitions.Add(new ColumnDefinition{ Width = new GridLength(25, GridUnitType.Star) });
-            MembersGrid.ColumnDefinitions.Add(new ColumnDefinition{ Width = new GridLength(10, GridUnitType.Star) });
 
             MembersGrid.ShowGridLines = true;
 
@@ -83,12 +82,11 @@ namespace UiApp
 
             #endregion
 
-
-            #region Member Role Title
+            #region View Member Title
 
             TextBlock memberRoleBlock = new TextBlock
             {
-                Text = "Role",
+                Text = "View",
                 Foreground = Brushes.White,
                 FontSize = 16,
                 FontWeight = FontWeights.ExtraBold,
@@ -98,23 +96,6 @@ namespace UiApp
             memberRoleBlock.SetValue(Grid.ColumnProperty, 2);
             memberRoleBlock.SetValue(Grid.RowProperty, r);
             MembersGrid.Children.Add(memberRoleBlock);
-
-            #endregion
-
-            #region Member Update Title
-
-            TextBlock memberUpdateAccessBlock = new TextBlock
-            {
-                Text = "User Management",
-                Foreground = Brushes.White,
-                FontSize = 16,
-                FontWeight = FontWeights.ExtraBold,
-                TextAlignment = TextAlignment.Center
-            };
-
-            memberUpdateAccessBlock.SetValue(Grid.ColumnProperty, 3);
-            memberUpdateAccessBlock.SetValue(Grid.RowProperty, r);
-            MembersGrid.Children.Add(memberUpdateAccessBlock);
 
             #endregion
 
@@ -134,7 +115,10 @@ namespace UiApp
                     Text = user.Id.ToString(),
                     Foreground = Brushes.White,
                     FontSize = 16,
-                    TextAlignment = TextAlignment.Center
+                    TextAlignment = TextAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Margin = new Thickness(5)
 
                 };
                 userIdBlock.SetValue(Grid.ColumnProperty, 0);
@@ -150,7 +134,10 @@ namespace UiApp
                     Text = user.Username,
                     Foreground = Brushes.White,
                     FontSize = 16,
-                    TextAlignment = TextAlignment.Center
+                    TextAlignment = TextAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Margin = new Thickness(5)
                 };
                 usernameBlock.SetValue(Grid.ColumnProperty, 1);
                 usernameBlock.SetValue(Grid.RowProperty, r);
@@ -158,107 +145,37 @@ namespace UiApp
 
                 #endregion
 
-                #region Member Role
+                #region View User
 
-                ComboBox memberRoleBox = new ComboBox();
-
-                ComboBoxItem nonMemberBoxItem = new ComboBoxItem{Content = "Non Member"};
-
-                memberRoleBox.Items.Add(nonMemberBoxItem);
-
-                ComboBoxItem pendingApplicantBoxItem = new ComboBoxItem{Content = "Applicant - Pending"};
-
-                memberRoleBox.Items.Add(pendingApplicantBoxItem);
-
-                ComboBoxItem applicantBoxItem = new ComboBoxItem { Content = "Applicant" };
-
-                memberRoleBox.Items.Add(applicantBoxItem);
-
-                ComboBoxItem recruitBoxItem = new ComboBoxItem { Content = "Recruit" };
-
-                memberRoleBox.Items.Add(recruitBoxItem);
-
-                ComboBoxItem memberBoxItem = new ComboBoxItem { Content = "Member" };
-
-                memberRoleBox.Items.Add(memberBoxItem);
-
-                ComboBoxItem seniorMemberBoxItem = new ComboBoxItem { Content = "Senior Member" };
-
-                memberRoleBox.Items.Add(seniorMemberBoxItem);
-
-                ComboBoxItem staffMemberBoxItem = new ComboBoxItem { Content = "Staff Member" };
-
-                memberRoleBox.Items.Add(staffMemberBoxItem);
-
-                ComboBoxItem directorBoxItem = new ComboBoxItem { Content = "Director" };
-
-                memberRoleBox.Items.Add(directorBoxItem);
-
-                ComboBoxItem founderBoxItem = new ComboBoxItem { Content = "Founder" };
-
-                memberRoleBox.Items.Add(founderBoxItem);
-
-                memberRoleBox.SelectedIndex = (int)user.MemberStatus;
-
-                memberRoleBox.SetValue(Grid.ColumnProperty, 2);
-                memberRoleBox.SetValue(Grid.RowProperty, r);
-                MembersGrid.Children.Add(memberRoleBox);
-
-                memberRoleBox.SelectionChanged += (sender, args) =>
+                Button viewButton = new Button
                 {
-                    ComboBox cmb = sender as ComboBox;
-
-                    OnUserMemberStatusChanged(user, cmb.SelectedIndex);
-                };
-
-                #endregion
-
-                #region User Management
-
-                CheckBox userManagementBox = new CheckBox
-                {
-                    IsChecked = user.UserManagement,
+                    Background = Brushes.LightGray,
+                    Foreground = Brushes.Black,
                     VerticalAlignment = VerticalAlignment.Center,
-                    HorizontalAlignment = HorizontalAlignment.Center
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Content = "View",
+                    Height = 36,
+                    Width = 90,
+                    FontWeight = FontWeights.Bold,
+                    Margin = new Thickness(10)
                 };
-                userManagementBox.Click += (sender, args) =>
-                {
-                    OnUserManagementChecked(user, (bool)userManagementBox.IsChecked);
-                };
-                userManagementBox.SetValue(Grid.ColumnProperty, 3);
-                userManagementBox.SetValue(Grid.RowProperty, r);
-                MembersGrid.Children.Add(userManagementBox);
 
+                viewButton.Click += MemberViewButtonOnClick;
+
+                viewButton.SetValue(Grid.ColumnProperty, 2);
+                viewButton.SetValue(Grid.RowProperty, r);
+
+                MembersGrid.Children.Add(viewButton);
+                
                 #endregion
 
                 r += 1;
             }
         }
 
-        private void OnUserManagementChecked(User user, bool isChecked)
+        private void MemberViewButtonOnClick(object sender, RoutedEventArgs e)
         {
-            if (User.CurrentLoggedInUser.MemberStatus < MemberStatus.Director)
-            {
-                InfoLabel.Content = $"You don't have access!";
-                return;
-            }
-
-            using Database database = new Database();
-
-            User member = database.Users.FirstOrDefault(x => x.Id == user.Id);
-
-            if (member == null) return;
-
-            member.UserManagement = isChecked;
-
-            database.SaveChanges();
-
-            if (User.CurrentLoggedInUser.Id == member.Id)
-            {
-                User.CurrentLoggedInUser = member;
-            }
-
-            InfoLabel.Content = $"You've updated {member.Username}'s user management role to {member.UserManagement}";
+            return;
         }
 
         private void OnUserMemberStatusChanged(User user, int newMemberStatus)
