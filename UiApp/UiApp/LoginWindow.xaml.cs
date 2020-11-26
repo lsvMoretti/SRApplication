@@ -26,8 +26,14 @@ namespace UiApp
             InitializeComponent();
         }
 
-        private async void LoginButton_OnClick(object sender, RoutedEventArgs e)
+        private void LoginButton_OnClick(object sender, RoutedEventArgs e)
         {
+            AttemptLogin();
+        }
+
+        private async void AttemptLogin()
+        {
+
             if (!UsernameBox.Text.Any() || !PasswordBox.Password.Any())
             {
 
@@ -77,7 +83,11 @@ namespace UiApp
             HomeWindow homeWindow = new HomeWindow(username, user.Id);
             homeWindow.Show();
             this.Close();
-            
+        }
+
+        private void PasswordBox_OnKeyUp(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter) AttemptLogin();
         }
     }
 }

@@ -23,25 +23,26 @@ namespace UiApp
     /// </summary>
     public partial class ShowMembers : Window
     {
+        private static int _currentRow = 0;
+
         public ShowMembers()
         {
             InitializeComponent();
-            LoadMembersInfo();
+            FormatGrid();
+            LoadAllMembers();
         }
 
-        private void LoadMembersInfo()
+        private void FormatGrid()
         {
-            MembersGrid.ColumnDefinitions.Add(new ColumnDefinition{Width = new GridLength(10, GridUnitType.Star)});
+            MembersGrid.Children.Clear();
+
+            MembersGrid.ColumnDefinitions.Add(new ColumnDefinition{ Width = new GridLength(10, GridUnitType.Star) });
             MembersGrid.ColumnDefinitions.Add(new ColumnDefinition{ Width = new GridLength(25, GridUnitType.Star) });
             MembersGrid.ColumnDefinitions.Add(new ColumnDefinition{ Width = new GridLength(25, GridUnitType.Star) });
 
             MembersGrid.ShowGridLines = true;
 
-            using Database database = new Database();
-
-            List<User> users = database.Users.OrderBy(x => x.Id).ToList();
-
-            int r = 0;
+            _currentRow = 0;
 
             MembersGrid.RowDefinitions.Add(new RowDefinition
             {
@@ -60,7 +61,7 @@ namespace UiApp
             };
 
             userIdTitleBlock.SetValue(Grid.ColumnProperty, 0);
-            userIdTitleBlock.SetValue(Grid.RowProperty, r);
+            userIdTitleBlock.SetValue(Grid.RowProperty, _currentRow);
             MembersGrid.Children.Add(userIdTitleBlock);
 
             #endregion
@@ -77,8 +78,9 @@ namespace UiApp
             };
 
             usernameTitleBlock.SetValue(Grid.ColumnProperty, 1);
-            usernameTitleBlock.SetValue(Grid.RowProperty, r);
+            usernameTitleBlock.SetValue(Grid.RowProperty, _currentRow);
             MembersGrid.Children.Add(usernameTitleBlock);
+
 
             #endregion
 
@@ -94,12 +96,25 @@ namespace UiApp
             };
 
             memberRoleBlock.SetValue(Grid.ColumnProperty, 2);
-            memberRoleBlock.SetValue(Grid.RowProperty, r);
+            memberRoleBlock.SetValue(Grid.RowProperty, _currentRow);
             MembersGrid.Children.Add(memberRoleBlock);
 
             #endregion
 
-            r += 1;
+
+            _currentRow += 1;
+
+        }
+
+        private void LoadAllMembers()
+        {
+
+            MembersGrid.Children.Clear();
+            _currentRow = 1;
+
+            using Database database = new Database();
+
+            List<User> users = database.Users.OrderBy(x => x.Id).ToList();
 
             foreach (User user in users)
             {
@@ -122,7 +137,7 @@ namespace UiApp
 
                 };
                 userIdBlock.SetValue(Grid.ColumnProperty, 0);
-                userIdBlock.SetValue(Grid.RowProperty, r);
+                userIdBlock.SetValue(Grid.RowProperty, _currentRow);
                 MembersGrid.Children.Add(userIdBlock);
 
                 #endregion
@@ -140,7 +155,7 @@ namespace UiApp
                     Margin = new Thickness(5)
                 };
                 usernameBlock.SetValue(Grid.ColumnProperty, 1);
-                usernameBlock.SetValue(Grid.RowProperty, r);
+                usernameBlock.SetValue(Grid.RowProperty, _currentRow);
                 MembersGrid.Children.Add(usernameBlock);
 
                 #endregion
@@ -163,13 +178,13 @@ namespace UiApp
                 viewButton.Click += MemberViewButtonOnClick;
 
                 viewButton.SetValue(Grid.ColumnProperty, 2);
-                viewButton.SetValue(Grid.RowProperty, r);
+                viewButton.SetValue(Grid.RowProperty, _currentRow);
 
                 MembersGrid.Children.Add(viewButton);
-                
+
                 #endregion
 
-                r += 1;
+                _currentRow += 1;
             }
         }
 
@@ -178,38 +193,102 @@ namespace UiApp
             return;
         }
 
-        private void OnUserMemberStatusChanged(User user, int newMemberStatus)
+        private void SearchButton_OnClick(object sender, RoutedEventArgs e)
         {
-            if (!User.CurrentLoggedInUser.UserManagement)
+            SearchMembers();
+        }
+
+        private void SearchMembers()
+        {
+            if (!SearchBox.Text.Any())
             {
-                InfoLabel.Content = $"You don't have access!";
+                LoadAllMembers();
                 return;
             }
 
-            MemberStatus memberStatus = (MemberStatus)newMemberStatus;
-
-            if (User.CurrentLoggedInUser.MemberStatus < memberStatus)
-            {
-                InfoLabel.Content = $"You don't have access!";
-                return;
-            }
+            MembersGrid.Children.Clear();
+            _currentRow = 1;
 
             using Database database = new Database();
 
-            User member = database.Users.FirstOrDefault(x => x.Id == user.Id);
+            List<User> users = database.Users.Where(x => x.Username.ToLower().Contains(SearchBox.Text.ToLower()))
+                .ToList();
 
-            if (member == null) return;
-
-            member.MemberStatus = memberStatus;
-
-            database.SaveChanges();
-
-            if (User.CurrentLoggedInUser.Id == member.Id)
+            foreach (User user in users)
             {
-                User.CurrentLoggedInUser = member;
-            }
+                MembersGrid.RowDefinitions.Add(new RowDefinition
+                {
+                    Height = GridLength.Auto
+                });
 
-            InfoLabel.Content = $"You've updated {member.Username}'s user management role to {(memberStatus).AsString(EnumFormat.Description)}";
+                #region User ID
+
+                TextBlock userIdBlock = new TextBlock
+                {
+                    Text = user.Id.ToString(),
+                    Foreground = Brushes.White,
+                    FontSize = 16,
+                    TextAlignment = TextAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Margin = new Thickness(5)
+
+                };
+                userIdBlock.SetValue(Grid.ColumnProperty, 0);
+                userIdBlock.SetValue(Grid.RowProperty, _currentRow);
+                MembersGrid.Children.Add(userIdBlock);
+
+                #endregion
+
+                #region Username
+
+                TextBlock usernameBlock = new TextBlock
+                {
+                    Text = user.Username,
+                    Foreground = Brushes.White,
+                    FontSize = 16,
+                    TextAlignment = TextAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Margin = new Thickness(5)
+                };
+                usernameBlock.SetValue(Grid.ColumnProperty, 1);
+                usernameBlock.SetValue(Grid.RowProperty, _currentRow);
+                MembersGrid.Children.Add(usernameBlock);
+
+                #endregion
+
+                #region View User
+
+                Button viewButton = new Button
+                {
+                    Background = Brushes.LightGray,
+                    Foreground = Brushes.Black,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Content = "View",
+                    Height = 36,
+                    Width = 90,
+                    FontWeight = FontWeights.Bold,
+                    Margin = new Thickness(10)
+                };
+
+                viewButton.Click += MemberViewButtonOnClick;
+
+                viewButton.SetValue(Grid.ColumnProperty, 2);
+                viewButton.SetValue(Grid.RowProperty, _currentRow);
+
+                MembersGrid.Children.Add(viewButton);
+
+                #endregion
+
+                _currentRow += 1;
+            }
+        }
+
+        private void SearchBox_OnKeyUp(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter) SearchMembers();
         }
     }
 }
