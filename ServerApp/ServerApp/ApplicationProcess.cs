@@ -206,7 +206,7 @@ namespace ServerApp
                     if (currentUser.Age < 17)
                     {
                         // Not 17 years old
-                        currentUser.AdmissionNotes = $"Declined due to being under 17. Calculated age: {currentUser.Age}";
+                        currentUser.AdmissionNotes = currentUser.AdmissionNotes + $"\n[AUTO] [{DateTime.UtcNow}] - Declined due to being under 17. Calculated age: {currentUser.Age}";
 
                         await database.SaveChangesAsync();
 
