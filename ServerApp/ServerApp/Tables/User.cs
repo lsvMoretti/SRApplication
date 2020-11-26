@@ -60,6 +60,11 @@ namespace ServerApp.Tables
         public bool Admissions { get; set; }
 
         /// <summary>
+        /// Date of Birth
+        /// </summary>
+        public DateTime BirthDate { get; set; }
+
+        /// <summary>
         /// Application Join Date
         /// </summary>
         public DateTime ApplicationDate { get; set; }
@@ -84,7 +89,17 @@ namespace ServerApp.Tables
         /// </summary>
         public string AdminNotes { get; set; }
 
-        public static User CurrentLoggedInUser { get; set; }
+        public int Age
+        {
+            get
+            {
+                DateTime now = DateTime.Today;
+                int age = now.Year - BirthDate.Year;
+                if (now < BirthDate.AddYears(age)) age--;
+
+                return age;
+            }
+        }
     }
 
     public enum MemberStatus
@@ -123,4 +138,6 @@ namespace ServerApp.Tables
         LOA,
         MIA
     }
+
+
 }

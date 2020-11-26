@@ -1,4 +1,5 @@
-﻿using DSharpPlus.CommandsNext;
+﻿using System;
+using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using ServerApp.Tables;
 using System.Linq;
@@ -25,6 +26,22 @@ namespace ServerApp
                 {
                     await ctx.Member.SendMessageAsync(
                         $"Hey {ctx.Member.Mention}! I've seen you are currently either an SR member or going through the process! If this is an error, please ask in #server-help");
+                    return;
+                }
+
+                DateTime now = DateTime.UtcNow;
+
+                if (DateTime.Compare(now, user.ApplicationDate.AddDays(5)) < 0)
+                {
+                    await ctx.Member.SendMessageAsync(
+                        $"You've tried re-applying to quick. Please wait 5 days from your last time!");
+                    return;
+                }
+
+                if (user.BirthDate != DateTime.MinValue && user.Age < 17)
+                {
+                    await ctx.Member.SendMessageAsync(
+                        "You've already tried applying but were found to be underage. If this is wrong, contact a staff member!");
                     return;
                 }
             }

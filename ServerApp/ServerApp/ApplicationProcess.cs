@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
@@ -48,16 +50,22 @@ namespace ServerApp
 
                 await using Database database = new Database();
 
-                User newUser = new User
+                User user = database.Users.FirstOrDefault(x => x.DiscordId == member.Id.ToString());
+
+                if (user == null)
                 {
-                    DiscordId = member.Id.ToString(),
-                    Username = currentNickname,
-                    ApplicationDate = DateTime.UtcNow
-                };
+                    user = new User
+                    {
+                        DiscordId = member.Id.ToString(),
+                        Username = currentNickname,
+                        ApplicationDate = DateTime.UtcNow,
+                        BirthDate = DateTime.MinValue
+                    };
 
-                await database.Users.AddAsync(newUser);
+                    await database.Users.AddAsync(user);
 
-                await database.SaveChangesAsync();
+                    await database.SaveChangesAsync();
+                }
 
                 await newDmChannel.TriggerTypingAsync();
 
@@ -80,7 +88,7 @@ namespace ServerApp
 
                 await newDmChannel.SendMessageAsync("Once this is done, just reply here with only your SteamID64 link!");
 
-                activeApplicationAnswers.Add(newUser.DiscordId.ToString(), 0);
+                activeApplicationAnswers.Add(user.DiscordId, 0);
             }
             catch (Exception e)
             {
@@ -156,10 +164,16 @@ namespace ServerApp
                         await activeDmChannel.TriggerTypingAsync();
 
                         activeApplicationAnswers.Remove(currentUser.DiscordId);
-                        activeApplicationAnswers.Add(currentUser.DiscordId, 1);
+                        activeApplicationAnswers.Add(currentUser.DiscordId, 2);
 
                         await activeDmChannel.SendMessageAsync("Great! Onto the next stage!");
-                        // TODO Next question here
+
+                        await activeDmChannel.TriggerTypingAsync();
+                        await Task.Delay(3000);
+
+                        await activeDmChannel.SendMessageAsync(
+                            "Next, we ask for your Date of Birth. This is to make sure you conform the minimum age of 17 and of course, get those birthday messages!\n\n" +
+                            "Please use the following format. DD/MM/YYYY\n\nExample: 25/08/2020");
                         return;
                     }
 
@@ -170,6 +184,46 @@ namespace ServerApp
 
                     await activeDmChannel.SendMessageAsync("Please try again, using the steamid.io link above.");
                     return;
+                }
+
+                if (currentStage == 2)
+                {
+                    await activeDmChannel.TriggerTypingAsync();
+
+                    bool tryBirthDateParse = DateTime.TryParse(e.Message.Content, out DateTime birthDate);
+
+                    if (!tryBirthDateParse)
+                    {
+                        await activeDmChannel.SendMessageAsync(
+                            "It looks like there was an error. Check above for an example!");
+                        return;
+                    }
+
+                    currentUser.BirthDate = birthDate;
+
+                    Debug.WriteLine($"Calculated Age: {currentUser.Age}");
+
+                    if (currentUser.Age < 17)
+                    {
+                        // Not 17 years old
+                        currentUser.AdmissionNotes = $"Declined due to being under 17. Calculated age: {currentUser.Age}";
+
+                        await database.SaveChangesAsync();
+
+                        await activeDmChannel.SendMessageAsync(
+                            $"Hey! Sorry to inform you, Smoking Rifles have a minimum age of 17. Your calculated age was {currentUser.Age}. You've been automatically declined from SR.");
+
+                        activeDmChannels.Remove(currentUser.DiscordId);
+                        activeApplicationAnswers.Remove(currentUser.DiscordId);
+                        return;
+                    }
+
+                    await database.SaveChangesAsync();
+
+                    await activeDmChannel.SendMessageAsync(
+                        $"Thanks for this information! It's been added onto your application.");
+
+                    //TODO Next question here
                 }
             }
             catch (Exception exception)
