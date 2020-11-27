@@ -25,6 +25,7 @@ namespace UiApp
         public int UserId { get; }
 
         public static HomeWindow Instance;
+
         public HomeWindow(string username, int userId)
         {
             InitializeComponent();
@@ -75,50 +76,37 @@ namespace UiApp
 
                 showMembersItem.Click += ShowMembers_OnClick;
 
-                MenuItem addMemberItem = new MenuItem
-                {
-                    Name = "AddMember",
-                    Header = "Add Member"
-                };
-
-                membersMenuItem.Items.Add(addMemberItem);
-
-                addMemberItem.Click += AddMember_OnClick;
-
-                if (user.Admissions)
-                {
-                    MenuItem admissionsMenuItem = new MenuItem
-                    {
-                        Name = "Admissions",
-                        Header = "Admissions"
-                    };
-
-                    //TODO Add click event
-
-                    membersMenuItem.Items.Add(admissionsMenuItem);
-                }
-
                 if (user.DiscordUserSync)
                 {
                     MenuItem forceDiscordSyncItem = new MenuItem
                     {
                         Header = "Force Discord Sync",
                         Name = "DiscordSync"
-
                     };
 
                     forceDiscordSyncItem.Click += DiscordSync_OnClick;
 
                     membersMenuItem.Items.Add(forceDiscordSyncItem);
                 }
+            }
 
+            if (user.Admissions)
+            {
+                MenuItem admissionsMenuItem = new MenuItem
+                {
+                    Name = "Admissions",
+                    Header = "Admissions"
+                };
+
+                admissionsMenuItem.Click += AdmissionsMenuItemOnClick;
+
+                MainMenu.Items.Add(admissionsMenuItem);
             }
         }
 
         private void CloseItem_OnClick(object sender, RoutedEventArgs e)
         {
             this.Close();
-            
         }
 
         private void LogoutItem_OnClick(object sender, RoutedEventArgs e)
@@ -133,7 +121,10 @@ namespace UiApp
             Close();
 
             return;
+        }
 
+        private void AdmissionsMenuItemOnClick(object sender, RoutedEventArgs e)
+        {
         }
 
         private void ShowMembers_OnClick(object sender, RoutedEventArgs e)
@@ -141,11 +132,6 @@ namespace UiApp
             ShowMembers showMembers = new ShowMembers();
 
             showMembers.Show();
-            return;
-        }
-
-        private void AddMember_OnClick(object sender, RoutedEventArgs e)
-        {
             return;
         }
 

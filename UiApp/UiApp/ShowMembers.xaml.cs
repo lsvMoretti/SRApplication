@@ -36,9 +36,9 @@ namespace UiApp
         {
             MembersGrid.Children.Clear();
 
-            MembersGrid.ColumnDefinitions.Add(new ColumnDefinition{ Width = new GridLength(10, GridUnitType.Star) });
-            MembersGrid.ColumnDefinitions.Add(new ColumnDefinition{ Width = new GridLength(25, GridUnitType.Star) });
-            MembersGrid.ColumnDefinitions.Add(new ColumnDefinition{ Width = new GridLength(25, GridUnitType.Star) });
+            MembersGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(10, GridUnitType.Star) });
+            MembersGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(25, GridUnitType.Star) });
+            MembersGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(25, GridUnitType.Star) });
 
             MembersGrid.ShowGridLines = true;
 
@@ -64,7 +64,7 @@ namespace UiApp
             userIdTitleBlock.SetValue(Grid.RowProperty, _currentRow);
             MembersGrid.Children.Add(userIdTitleBlock);
 
-            #endregion
+            #endregion User ID Title
 
             #region Username Title
 
@@ -81,8 +81,7 @@ namespace UiApp
             usernameTitleBlock.SetValue(Grid.RowProperty, _currentRow);
             MembersGrid.Children.Add(usernameTitleBlock);
 
-
-            #endregion
+            #endregion Username Title
 
             #region View Member Title
 
@@ -99,16 +98,13 @@ namespace UiApp
             memberRoleBlock.SetValue(Grid.RowProperty, _currentRow);
             MembersGrid.Children.Add(memberRoleBlock);
 
-            #endregion
-
+            #endregion View Member Title
 
             _currentRow += 1;
-
         }
 
         private void LoadAllMembers()
         {
-
             MembersGrid.Children.Clear();
             _currentRow = 1;
 
@@ -134,13 +130,12 @@ namespace UiApp
                     VerticalAlignment = VerticalAlignment.Center,
                     HorizontalAlignment = HorizontalAlignment.Center,
                     Margin = new Thickness(5)
-
                 };
                 userIdBlock.SetValue(Grid.ColumnProperty, 0);
                 userIdBlock.SetValue(Grid.RowProperty, _currentRow);
                 MembersGrid.Children.Add(userIdBlock);
 
-                #endregion
+                #endregion User ID
 
                 #region Username
 
@@ -158,7 +153,7 @@ namespace UiApp
                 usernameBlock.SetValue(Grid.RowProperty, _currentRow);
                 MembersGrid.Children.Add(usernameBlock);
 
-                #endregion
+                #endregion Username
 
                 #region View User
 
@@ -175,22 +170,21 @@ namespace UiApp
                     Margin = new Thickness(10)
                 };
 
-                viewButton.Click += MemberViewButtonOnClick;
+                viewButton.Click += (sender, args) =>
+                {
+                    MemberInfo memberInfo = new MemberInfo(user);
+                    memberInfo.Show();
+                };
 
                 viewButton.SetValue(Grid.ColumnProperty, 2);
                 viewButton.SetValue(Grid.RowProperty, _currentRow);
 
                 MembersGrid.Children.Add(viewButton);
 
-                #endregion
+                #endregion View User
 
                 _currentRow += 1;
             }
-        }
-
-        private void MemberViewButtonOnClick(object sender, RoutedEventArgs e)
-        {
-            return;
         }
 
         private void SearchButton_OnClick(object sender, RoutedEventArgs e)
@@ -232,13 +226,12 @@ namespace UiApp
                     VerticalAlignment = VerticalAlignment.Center,
                     HorizontalAlignment = HorizontalAlignment.Center,
                     Margin = new Thickness(5)
-
                 };
                 userIdBlock.SetValue(Grid.ColumnProperty, 0);
                 userIdBlock.SetValue(Grid.RowProperty, _currentRow);
                 MembersGrid.Children.Add(userIdBlock);
 
-                #endregion
+                #endregion User ID
 
                 #region Username
 
@@ -256,7 +249,7 @@ namespace UiApp
                 usernameBlock.SetValue(Grid.RowProperty, _currentRow);
                 MembersGrid.Children.Add(usernameBlock);
 
-                #endregion
+                #endregion Username
 
                 #region View User
 
@@ -273,14 +266,18 @@ namespace UiApp
                     Margin = new Thickness(10)
                 };
 
-                viewButton.Click += MemberViewButtonOnClick;
+                viewButton.Click += (sender, args) =>
+                {
+                    MemberInfo memberInfo = new MemberInfo(user);
+                    memberInfo.Show();
+                };
 
                 viewButton.SetValue(Grid.ColumnProperty, 2);
                 viewButton.SetValue(Grid.RowProperty, _currentRow);
 
                 MembersGrid.Children.Add(viewButton);
 
-                #endregion
+                #endregion View User
 
                 _currentRow += 1;
             }
@@ -288,7 +285,7 @@ namespace UiApp
 
         private void SearchBox_OnKeyUp(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Enter) SearchMembers();
+            if (e.Key == Key.Enter) SearchMembers();
         }
     }
 }

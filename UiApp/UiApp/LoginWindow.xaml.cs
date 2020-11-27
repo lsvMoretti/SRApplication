@@ -33,10 +33,8 @@ namespace UiApp
 
         private async void AttemptLogin()
         {
-
             if (!UsernameBox.Text.Any() || !PasswordBox.Password.Any())
             {
-
                 MessageLabel.Content = "You must enter a username or password!";
                 return;
             }
@@ -52,7 +50,10 @@ namespace UiApp
                 User unsociableUser = new User
                 {
                     Username = "Unsociable",
-                    Password = pass
+                    Password = pass,
+                    ApplicationDate = DateTime.MinValue,
+                    BirthDate = DateTime.MinValue,
+                    LeavingDate = DateTime.MinValue
                 };
 
                 await database.Users.AddAsync(unsociableUser);
@@ -87,7 +88,7 @@ namespace UiApp
 
         private void PasswordBox_OnKeyUp(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Enter) AttemptLogin();
+            if (e.Key == Key.Enter) AttemptLogin();
         }
     }
 }

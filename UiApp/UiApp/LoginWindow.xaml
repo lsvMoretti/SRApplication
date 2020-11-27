@@ -7,12 +7,11 @@
         mc:Ignorable="d"
         Title="Login" Height="800" Width="800" ResizeMode="NoResize">
     <Grid Background="#FF065D11">
-        <TextBox Name="UsernameBox" Margin="0,285,0,0" Text="" TextWrapping="Wrap" FontSize="16" HorizontalAlignment="Center" Width="150" Height="27" VerticalAlignment="Top"/>
-        <PasswordBox Name="PasswordBox" Margin="0,317,0,0" Height="27" VerticalAlignment="Top" HorizontalAlignment="Center" Width="150" FontSize="16" KeyUp="PasswordBox_OnKeyUp"/>
-        <Label Content="Username" Margin="223,285,0,0" Foreground="White" Height="32" VerticalAlignment="Top" HorizontalAlignment="Left" Width="85" FontSize="16" VerticalContentAlignment="Center" HorizontalContentAlignment="Right"/>
-        <Label Content="Password" Margin="223,312,0,0" Foreground="White" Height="36" VerticalAlignment="Top" HorizontalAlignment="Left" Width="86" FontSize="16" VerticalContentAlignment="Center" HorizontalContentAlignment="Right"/>
-        <Button Name="LoginButton" Content="Login" HorizontalAlignment="Center" Margin="0,367,0,0" VerticalAlignment="Top" Height="36" Width="90" FontSize="16" Click="LoginButton_OnClick"/>
-        <Label Name="MessageLabel"  Content="" Margin="0,427,0,0" Foreground="White" Height="32" VerticalAlignment="Top" HorizontalAlignment="Center" Width="337" FontSize="18" VerticalContentAlignment="Center" HorizontalContentAlignment="Center"/>
-
+        <TextBox Name="UsernameBox" Margin="0,285,0,0" Text="" TextWrapping="Wrap" FontSize="16" HorizontalAlignment="Center" Width="150" Height="27" VerticalAlignment="Top" />
+        <PasswordBox Name="PasswordBox" Margin="0,317,0,0" Height="27" VerticalAlignment="Top" HorizontalAlignment="Center" Width="150" FontSize="16" KeyUp="PasswordBox_OnKeyUp" />
+        <Label Content="Username" Margin="223,285,0,0" Foreground="White" Height="32" VerticalAlignment="Top" HorizontalAlignment="Left" Width="85" FontSize="16" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" />
+        <Label Content="Password" Margin="223,312,0,0" Foreground="White" Height="36" VerticalAlignment="Top" HorizontalAlignment="Left" Width="86" FontSize="16" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" />
+        <Button Name="LoginButton" Content="Login" HorizontalAlignment="Center" Margin="0,367,0,0" VerticalAlignment="Top" Height="36" Width="90" FontSize="16" Click="LoginButton_OnClick" />
+        <Label Name="MessageLabel"  Content="" Margin="0,427,0,0" Foreground="White" Height="41" VerticalAlignment="Top" HorizontalAlignment="Center" Width="336" FontSize="18" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" />
     </Grid>
 </Window>
