@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:UiApp"
         mc:Ignorable="d"
         Title="Smoking Rifles - Member Info" Height="800" Width="800" ResizeMode="NoResize">
-    <Grid Name="Grid" Background="#FF065D11">
+    <Grid Name="Grid" Background="#264653">
         <TextBox Name="Nickname" HorizontalAlignment="Center" Margin="0,35,0,0" VerticalAlignment="Top" Width="685" Height="30" />
         <TextBox Name="UserId" HorizontalAlignment="Left" Margin="58,86,0,0" VerticalAlignment="Top" Width="326" Height="30" />
         <TextBox Name="SteamId" HorizontalAlignment="Left" Margin="405,86,0,0" VerticalAlignment="Top" Width="337" Height="30" />
