@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:UiApp"
         mc:Ignorable="d"
         Title="Login" Height="800" Width="800" ResizeMode="NoResize">
-    <Grid Background="#264653">
+    <Grid Background="#7EA172">
         <TextBox Name="UsernameBox" Margin="0,285,0,0" Text="" TextWrapping="Wrap" FontSize="16" HorizontalAlignment="Center" Width="150" Height="27" VerticalAlignment="Top" />
         <PasswordBox Name="PasswordBox" Margin="0,317,0,0" Height="27" VerticalAlignment="Top" HorizontalAlignment="Center" Width="150" FontSize="16" KeyUp="PasswordBox_OnKeyUp" />
         <Label Content="Username" Margin="223,285,0,0" Foreground="White" Height="32" VerticalAlignment="Top" HorizontalAlignment="Left" Width="85" FontSize="16" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" />

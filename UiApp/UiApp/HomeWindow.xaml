@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:UiApp"
         mc:Ignorable="d"
         Title="Smoking Rifles - Home" Height="800" Width="800" ResizeMode="NoResize">
-    <Grid Background="#264653">
+    <Grid Background="#7EA172">
         <Label Name="UsernameText" Content="" Margin="0,47,0,0" VerticalAlignment="Top" HorizontalAlignment="Center" Width="594" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="18" Foreground="White" />
         <Menu Height="20" x:Name="MainMenu" IsMainMenu="True" Background="LightGray" VerticalAlignment="Top">
             <MenuItem Header="File">
