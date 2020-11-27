@@ -128,7 +128,7 @@ namespace UiApp
             TotalDays.Foreground = Brushes.White;
             TotalDays.HorizontalContentAlignment = HorizontalAlignment.Left;
             TotalDays.VerticalContentAlignment = VerticalAlignment.Center;
-            TotalDays.Text = $"Total Days: {Math.Round(totalDays)}";
+            TotalDays.Text = $"Total Days In Clan: {Math.Round(totalDays)}";
 
             if (totalDays < 60)
             {
