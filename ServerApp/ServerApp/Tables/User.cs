@@ -34,6 +34,8 @@ namespace ServerApp.Tables
         /// </summary>
         public Status Status { get; set; }
 
+        public string Country { get; set; }
+
         /// <summary>
         /// Unique User ID of Discord
         /// </summary>
@@ -89,6 +91,46 @@ namespace ServerApp.Tables
         /// </summary>
         public string AdminNotes { get; set; }
 
+        /// <summary>
+        /// Application Question No.1
+        /// </summary>
+        public string AppQuestionOne { get; set; }
+
+        /// <summary>
+        /// Application Answer No.1
+        /// </summary>
+        public string AppAnswerOne { get; set; }
+
+        /// <summary>
+        /// Application Question No.2
+        /// </summary>
+        public string AppQuestionTwo { get; set; }
+
+        /// <summary>
+        /// Application Answer No.2
+        /// </summary>
+        public string AppAnswerTwo { get; set; }
+
+        /// <summary>
+        /// Application Question No.3
+        /// </summary>
+        public string AppQuestionThree { get; set; }
+
+        /// <summary>
+        /// Application Answer No.3
+        /// </summary>
+        public string AppAnswerThree { get; set; }
+
+        /// <summary>
+        /// Application Question No.4
+        /// </summary>
+        public string AppQuestionFour { get; set; }
+
+        /// <summary>
+        /// Application Answer No.4
+        /// </summary>
+        public string AppAnswerFour { get; set; }
+
         public int Age
         {
             get
@@ -138,6 +180,4 @@ namespace ServerApp.Tables
         LOA,
         MIA
     }
-
-
 }

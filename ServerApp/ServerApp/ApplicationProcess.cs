@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using Microsoft.VisualBasic;
 using ServerApp.Tables;
 
 namespace ServerApp
@@ -69,24 +70,18 @@ namespace ServerApp
 
                 await newDmChannel.TriggerTypingAsync();
 
-                await Task.Delay(3000);
-
                 await newDmChannel.SendMessageAsync(
                     "Please note, this process is automated to help the Admissions Team get to you faster! Please only respond with the answer one message at a time. Take your time!");
 
                 await newDmChannel.TriggerTypingAsync();
 
-                await Task.Delay(3000);
-
                 await newDmChannel.SendMessageAsync(
                     $"The first thing I want you to do is link me your steamID64, this is so we can verify who you are! \n To do this, the best way is to head over to here and enter your steam username!" +
                     $"\n https://steamid.io/lookup");
 
-                await Task.Delay(5000);
-
                 await newDmChannel.TriggerTypingAsync();
 
-                await newDmChannel.SendMessageAsync("Once this is done, just reply here with only your SteamID64 link!");
+                await newDmChannel.SendMessageAsync("Once this is done, just reply here with only your SteamID64!");
 
                 activeApplicationAnswers.Add(user.DiscordId, 0);
             }
@@ -125,7 +120,7 @@ namespace ServerApp
                     // First stage - Replying with SteamID64
                     await activeDmChannel.TriggerTypingAsync();
 
-                    ulong steam64Result = 0;
+                    ulong steam64Result;
 
                     try
                     {
@@ -169,7 +164,6 @@ namespace ServerApp
                         await activeDmChannel.SendMessageAsync("Great! Onto the next stage!");
 
                         await activeDmChannel.TriggerTypingAsync();
-                        await Task.Delay(3000);
 
                         await activeDmChannel.SendMessageAsync(
                             "Next, we ask for your Date of Birth. This is to make sure you conform the minimum age of 17 and of course, get those birthday messages!\n\n" +
@@ -223,7 +217,144 @@ namespace ServerApp
                     await activeDmChannel.SendMessageAsync(
                         $"Thanks for this information! It's been added onto your application.");
 
-                    //TODO Next question here
+                    await activeDmChannel.SendMessageAsync(
+                        "So, which country are you from? We are a european clan and have members from all over the world!");
+
+                    activeApplicationAnswers.Remove(currentUser.DiscordId);
+                    activeApplicationAnswers.Add(currentUser.DiscordId, 3);
+                }
+
+                if (currentStage == 3)
+                {
+                    await activeDmChannel.TriggerTypingAsync();
+
+                    // Country Answer
+                    List<string> cultureList = new List<string>();
+
+                    CultureInfo[] getCultureInfo = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
+
+                    foreach (var cultureInfo in getCultureInfo)
+                    {
+                        RegionInfo getRegionInfo = new RegionInfo(cultureInfo.LCID);
+
+                        if (!cultureList.Contains(getRegionInfo.EnglishName))
+                        {
+                            cultureList.Add(getRegionInfo.EnglishName);
+                        }
+                    }
+
+                    string regionName = cultureList.FirstOrDefault(x => x.ToLower() == e.Message.Content.ToLower());
+
+                    if (regionName == null)
+                    {
+                        await activeDmChannel.SendMessageAsync(
+                            "I was unable to find the country! Please use the english name. Here's some examples!" +
+                            "\nUnited Kingdom\nBelgium\nUnited States\nGermany\nNetherlands");
+
+                        return;
+                    }
+
+                    currentUser.Country = regionName;
+
+                    await activeDmChannel.SendMessageAsync($"Thanks for that! Now, the next question.");
+
+                    await activeDmChannel.TriggerTypingAsync();
+
+                    string question = "So, tell us. How did you find out about the Smoking Rifles community?\nRemember, to only reply in one message, not multiple.";
+
+                    currentUser.AppQuestionOne = question;
+
+                    await database.SaveChangesAsync();
+
+                    await activeDmChannel.SendMessageAsync(question);
+
+                    activeApplicationAnswers.Remove(currentUser.DiscordId);
+                    activeApplicationAnswers.Add(currentUser.DiscordId, 4);
+
+                    return;
+                }
+
+                if (currentStage == 4)
+                {
+                    await activeDmChannel.TriggerTypingAsync();
+
+                    currentUser.AppAnswerOne = e.Message.Content;
+
+                    string question =
+                        "Nice! So, tell me. Why do you want to be part of the Smoking Rifles community?\nRemember, like last time to only reply in one message.";
+
+                    currentUser.AppQuestionTwo = question;
+
+                    await database.SaveChangesAsync();
+
+                    await activeDmChannel.SendMessageAsync(question);
+
+                    activeApplicationAnswers.Remove(currentUser.DiscordId);
+                    activeApplicationAnswers.Add(currentUser.DiscordId, 5);
+                    return;
+                }
+
+                if (currentStage == 5)
+                {
+                    await activeDmChannel.TriggerTypingAsync();
+
+                    currentUser.AppAnswerTwo = e.Message.Content;
+
+                    string question =
+                        "Did someone refer you to the clan, or maybe someone who inspired you to join through their game play? If so, just write down if you can remember. If not, just put no.";
+
+                    currentUser.AppQuestionThree = question;
+
+                    await database.SaveChangesAsync();
+
+                    await activeDmChannel.SendMessageAsync(question);
+
+                    activeApplicationAnswers.Remove(currentUser.DiscordId);
+                    activeApplicationAnswers.Add(currentUser.DiscordId, 6);
+                    return;
+                }
+
+                if (currentStage == 6)
+                {
+                    await activeDmChannel.TriggerTypingAsync();
+
+                    currentUser.AppAnswerThree = e.Message.Content;
+
+                    string question =
+                        "Cool! So, the last thing I want to know, what is your experience with Discord? It only needs to be a small reply. We are able to point you about if you don't use Discord much!\nThis just helps tailor the experience.";
+
+                    currentUser.AppQuestionFour = question;
+
+                    await database.SaveChangesAsync();
+
+                    await activeDmChannel.SendMessageAsync(question);
+
+                    activeApplicationAnswers.Remove(currentUser.DiscordId);
+                    activeApplicationAnswers.Add(currentUser.DiscordId, 7);
+                    return;
+                }
+
+                if (currentStage == 7)
+                {
+                    await activeDmChannel.TriggerTypingAsync();
+
+                    currentUser.AppAnswerFour = e.Message.Content;
+
+                    string reply =
+                        "Thanks for the information! Please wait for some more information whilst this gets sorted.\nI'll be leaving this channel in a minute.";
+
+                    // TODO Trigger App-Pending stuff
+
+                    currentUser.MemberStatus = MemberStatus.ApplicantPending;
+
+                    await database.SaveChangesAsync();
+
+                    await activeDmChannel.SendMessageAsync(reply);
+
+                    await activeDmChannel.DeleteAsync();
+
+                    activeApplicationAnswers.Remove(currentUser.DiscordId);
+                    activeDmChannels.Remove(currentUser.DiscordId);
                 }
             }
             catch (Exception exception)
